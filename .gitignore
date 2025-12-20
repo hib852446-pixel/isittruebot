@@ -6,6 +6,7 @@
 .env.*.local
 
 # Python
+version2_2.py
 __pycache__/
 *.py[cod]
 *$py.class
