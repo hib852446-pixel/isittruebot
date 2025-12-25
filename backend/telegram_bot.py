@@ -75,7 +75,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         )
 
 
-async def main():
+def main():
     """Start the Telegram bot"""
     logger.info("🚀 IsItTrue Telegram Bot Starting...")
     
@@ -89,7 +89,8 @@ async def main():
     logger.info("📡 Starting polling...")
     
     # Start polling
-    await application.run_polling()
+    application.run_polling()
+    #asyncio.run(application.run_polling())
 
 
 if __name__ == '__main__':
