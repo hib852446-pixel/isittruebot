@@ -6,10 +6,11 @@ Senior Python Developer - RESTful API Design
 
 import logging
 from datetime import datetime
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, current_app
 
 from core import AIAgent, RequestProcessor
 from services import GeminiService
+from config import SYSTEM_PROMPTS
 
 logger = logging.getLogger(__name__)
 
@@ -30,14 +31,14 @@ def init_api(app, gemini_service: GeminiService, config):
 def health_check():
     """Health check endpoint"""
     try:
-        is_healthy = app.gemini_service.health_check()
+        is_healthy = current_app.gemini_service.health_check()
         
         return jsonify({
             'status': 'healthy' if is_healthy else 'unhealthy',
             'service': 'IsItTrue AI Agent',
             'version': '4.0',
             'timestamp': datetime.now().isoformat(),
-            'ai_model': app.config_obj.AI_MODEL,
+            'ai_model': current_app.config_obj.AI_MODEL,
         }), 200 if is_healthy else 503
     
     except Exception as e:
@@ -89,15 +90,15 @@ def analyze():
             logger.info(f"🔍 Auto-detected type: {request_type}")
         
         # Validate request type
-        if request_type not in app.config_obj.SYSTEM_PROMPTS:
+        if request_type not in SYSTEM_PROMPTS:
             request_type = 'general_chat'
         
         # Get system prompt
-        system_prompt = app.config_obj.SYSTEM_PROMPTS.get(request_type)
+        system_prompt = SYSTEM_PROMPTS.get(request_type)
         
         # Generate response from Gemini
         logger.info(f"Calling Gemini AI ({request_type})...")
-        ai_response = app.gemini_service.generate_response(
+        ai_response = current_app.gemini_service.generate_response(
             prompt=text,
             system_prompt=system_prompt,
             temperature=temperature
@@ -109,7 +110,7 @@ def analyze():
             request_type=request_type,
             metadata={
                 'timestamp': datetime.now().isoformat(),
-                'model': app.config_obj.AI_MODEL,
+                'model': current_app.config_obj.AI_MODEL,
             }
         )
         

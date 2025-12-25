@@ -90,12 +90,10 @@ class GeminiService:
                 full_prompt,
                 generation_config=generation_config,
                 safety_settings={
-                    "HARM_CATEGORY_UNSPECIFIED": "BLOCK_NONE",
-                    "HARM_CATEGORY_DEROGATORY": "BLOCK_ONLY_HIGH",
-                    "HARM_CATEGORY_VIOLENCE": "BLOCK_ONLY_HIGH",
-                    "HARM_CATEGORY_SEXUAL": "BLOCK_ONLY_HIGH",
-                    "HARM_CATEGORY_MEDICAL": "BLOCK_ONLY_HIGH",
-                    "HARM_CATEGORY_DANGEROUS": "BLOCK_ONLY_HIGH",
+                    "HARM_CATEGORY_HARASSMENT": "BLOCK_ONLY_HIGH",
+                    "HARM_CATEGORY_HATE_SPEECH": "BLOCK_ONLY_HIGH",
+                    "HARM_CATEGORY_SEXUALLY_EXPLICIT": "BLOCK_ONLY_HIGH",
+                    "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_ONLY_HIGH",
                 }
             )
             
@@ -104,21 +102,21 @@ class GeminiService:
             
             return result
         
-        except genai.types.BlockedPromptException as e:
-            logger.warning(f"[WARNING] Blocked by safety filter: {e}")
-            raise ValueError("Content blocked by safety filter")
-        
-        except genai.types.StopCandidateException as e:
-            logger.warning(f"[WARNING] Generation stopped: {e}")
-            raise ValueError("Generation stopped - please rephrase")
-        
-        except genai.types.InvalidArgument as e:
-            logger.error(f"[ERROR] Invalid argument: {e}")
-            raise ValueError(f"Invalid request: {str(e)[:100]}")
+        except ValueError as e:
+            logger.warning(f"[WARNING] Value error: {e}")
+            raise
         
         except Exception as e:
-            logger.error(f"[ERROR] Gemini API error: {e}", exc_info=True)
-            raise
+            error_str = str(e).lower()
+            if "blocked" in error_str or "safety" in error_str:
+                logger.warning(f"[WARNING] Blocked by safety filter: {e}")
+                raise ValueError("Content blocked by safety filter")
+            elif "stop" in error_str:
+                logger.warning(f"[WARNING] Generation stopped: {e}")
+                raise ValueError("Generation stopped - please rephrase")
+            else:
+                logger.error(f"[ERROR] Gemini API error: {e}", exc_info=True)
+                raise
     
     async def generate_response_async(
         self,

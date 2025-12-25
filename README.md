@@ -239,5 +239,5 @@ Need help? Check:
 
 ---
 
-**Made with ❤️ for Truth**  
+**Made with ❤️ by Hiba*  
 Powered by Google Gemini 2.5 Flash ⚡

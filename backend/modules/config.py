@@ -8,9 +8,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# API Keys
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "8466385633:AAGvO_-cydfhqUhBoei5lxD2xZW1Wqmo2B4")
-GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBe0aZmGkXszybixlfzE63UBkqf9jr5Ef4")
+# API Keys - MUST be set in .env file
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN") or os.getenv("TELEGRAM_BOT_TOKEN", "")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY", "")
 
 # Logging
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")

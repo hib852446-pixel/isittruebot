@@ -8,3 +8,4 @@ Pillow==11.0.0
 python-telegram-bot==21.0.1
 tenacity==8.2.3
 requests==2.31.0
+langdetect==1.0.9
